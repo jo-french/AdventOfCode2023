@@ -1,0 +1,51 @@
+import pandas as pd
+import numpy as np0
+
+def process_num(l):
+    if len(l) == 0:
+        return 0
+    elif len(l) == 1:
+        return int(l[0])
+    else:
+        return 10*int(l[0]) + int(l[1])
+    
+def convertnums(pair):
+    n = pair[0]
+    if len(n) > 1:
+        n = numdict[n]
+    pair[0] = int(n)
+
+with open('input.txt') as f:
+    lines = f.read()
+    
+lines = lines.split("\n")
+
+numbers = [[a for a in l if a.isdigit()] for l in lines]
+calnums = [[n[0],n[-1]] for n in numbers]
+    
+cns = [process_num(item) for item in calnums]
+
+sum(cns)
+
+# 54940
+
+# Part 2
+
+import re
+
+numdict = {"one": "1", "two": "2", "three": "3", "four": "4", "five": "5", "six": "6", "seven": "7", "eight": "8", "nine": "9"}
+
+allnums = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"]
+
+numpos = [[[thisnum, m.start()] for thisnum in allnums for m in re.finditer(thisnum, s)] for s in lines]
+    
+[[convertnums(p) for p in item] for item in numpos]
+
+sortnums = [sorted(s, key = lambda x:x[1]) for s in numpos]
+numbers2 = [[thispair[0] for thispair in s] for s in sortnums]
+calnums2 = [[n[0],n[-1]] for n in numbers2]
+cns2 = [process_num(item) for item in calnums2]
+sum(cns2)
+
+# 54208
+
