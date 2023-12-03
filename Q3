@@ -1,0 +1,114 @@
+import pandas as pd
+import numpy as np
+
+def get_len(i, start):
+    pos = start
+    res = 1
+    while pos + 1 < N:
+        pos = pos + 1
+        if grid[i][pos].isdigit():
+            res = res + 1
+        else:
+            break
+    return res
+
+def next_to_symbol(i, start, length):
+    #left of number (including diagonals)
+    if start != 0:
+        if grid[i][start-1] != "." and not grid[i][start-1].isdigit():
+            return True
+        if i != 0:
+            if grid[i-1][start-1] != "." and not grid[i-1][start-1].isdigit():
+                return True
+        if i != N-1:
+            if grid[i+1][start-1] != "." and not grid[i+1][start-1].isdigit():
+                return True
+    #right of number (including diagonals)
+    if start+length-1 != N-1:
+        if grid[i][start+length] != "." and not grid[i][start+length].isdigit():
+            return True
+        if i != 0:
+            if grid[i-1][start+length] != "." and not grid[i-1][start+length].isdigit():
+                return True
+        if i != N-1:
+            if grid[i+1][start+length] != "." and not grid[i+1][start+length].isdigit():
+                return True
+    #top and bottom
+    for k in range(length):
+        if i != 0:
+            if grid[i-1][start+k] != "." and not grid[i-1][start+k].isdigit():
+                return True
+        if i != N-1:
+            if grid[i+1][start+k] != "." and not grid[i+1][start+k].isdigit():
+                return True
+    return False
+
+with open('input.txt') as f:
+    lines = f.read()
+    
+lines = lines.split("\n")
+lines = lines[:-1]
+
+N = 140
+
+grid = [[char for char in l] for l in lines]
+
+startpos = [[j for j in range(N) if grid[i][j].isdigit() and (j==0 or (j!=0 and not grid[i][j-1].isdigit()))] for i in range(N)]
+        
+lens = [[get_len(i, s) for s in startpos[i]] for i in range(N)]
+  
+engine_parts = [[next_to_symbol(row, startpos[row][idx], lens[row][idx]) for idx in range(len(startpos[row]))] for row in range(N)]
+
+numberlist = [lines[i][startpos[i][j]:startpos[i][j]+lens[i][j]] for i in range(N) for j in range(len(startpos[i])) if engine_parts[i][j] == True]
+intlist = [int(num) for num in numberlist]
+sum(intlist)
+# 521601
+
+# Part 2
+count = 0
+for j in range(N):
+    for i in range(N):
+        if grid[i][j] == "*":
+            count = count + 1
+            
+max(lens)
+
+ends = [[startpos[i][j] + lens[i][j]-1 for j in range(len(startpos[i]))] for i in range(N)]
+starcoords = [[i, j] for i in range(N) for j in range(N) if grid[i][j] == "*"]
+
+# For 1-3 digit numbers, the start or end must be in one of the 3 cells to the top, left, right, or bottom of the star to be adjacent.
+def is_adj(l, st, end, star):
+    i = star[0]
+    j = star[1]
+    if ((l == i-1 or l == i+1) and (st in [j-1, j, j+1] or end in [j-1, j, j+1])) or (l == i and (end == j-1 or st == j+1)):
+        return True
+    return False
+
+def numbers_around_star(star):
+    starnums = []
+    i = star[0]
+    j = star[1]
+    # above
+    for s in range(N):
+        for t in range(len(startpos[s])):
+            u = startpos[s][t]
+            v = ends[s][t]
+            if is_adj(s, u, v, star):
+                starnums.append([s, u, v])
+    return starnums
+
+def get_int(pt):
+    i = pt[0]
+    st = pt[1]
+    end = pt[2]
+    return int(lines[i][st:end+1])
+    
+all_star_nums = []        
+for star in starcoords:
+    all_star_nums.append(numbers_around_star(star))
+
+gear_nums = [item for item in all_star_nums if len(item) == 2]
+gear_ints = [get_int(item[0])*get_int(item[1]) for item in gear_nums]
+sum(gear_ints)
+          
+# 80694070   
