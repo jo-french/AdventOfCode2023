@@ -133,4 +133,4 @@ mapped = map_endpts(ttohm, outranges)
 outranges = get_source_ranges(mapped, htold)
 mapped = map_endpts(htolm, outranges)
 
-min(pt[0] for pt in mapped if pt[0]!=0)
+min(pt[0] for pt in mapped)
