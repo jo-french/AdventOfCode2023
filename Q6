@@ -1,0 +1,35 @@
+import pandas as pd
+import numpy as np
+
+def solns(T, d):
+    det = (T**2)/4 - d
+    if det < 0:
+        return False
+    elif det == 0:
+        return T/2
+    else:
+        return [T/2-np.sqrt(det), T/2 + np.sqrt(det)]
+
+with open('input.txt') as f:
+    lines = f.read()
+    
+lines = lines.split("\n")
+lines = lines[:-1]
+
+times = [int(x) for x in lines[0].split(":")[1].split()]
+dists = [int(y) for y in lines[1].split(":")[1].split()]
+
+# Plot (inverted) parabolas of time t at start between 0 and T (total time)
+# Want values of (T-t)*t above the line y = previous max dist (as t is the subsequent speed for time T-t).
+# Solve for two points of intersection and find integers in between.
+# (T-t)*t-d >= 0.
+# t = T/2 +/- sqrt(T^2/4-d)
+
+endpts = [solns(times[i], dists[i]) for i in range(len(times))]
+
+# All have two solutions. Find number of integers between the end points.
+# No end points are integers so no edge cases
+nums = [np.floor(pt[1])-np.ceil(pt[0]) + 1 for pt in endpts]
+np.product(nums)
+
+# 3317888
