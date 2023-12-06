@@ -33,3 +33,13 @@ nums = [np.floor(pt[1])-np.ceil(pt[0]) + 1 for pt in endpts]
 np.product(nums)
 
 # 3317888
+
+# Part 2
+
+time = int("".join(x for x in lines[0].split(":")[1].split()))
+dist = int("".join(y for y in lines[1].split(":")[1].split()))
+
+soln = solns(time, dist)
+np.floor(soln[1])-np.ceil(soln[0]) + 1
+
+# 24655068
