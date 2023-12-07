@@ -1,0 +1,37 @@
+import pandas as pd
+import numpy as np
+
+from collections import Counter
+
+def counts_dict(cards):
+    return Counter(c for c in cards.upper())
+
+def cards_type(c):
+    cdict = counts_dict(c)
+    label = tuple(sorted(list(cdict.values())))
+    return label_rank[label]
+    
+def key_function(x):
+    c = x[0]
+    r = cards_type(c)
+    c_ranks = [card_ranks[thiscard] for thiscard in c]
+    return [1000*r] + c_ranks
+
+with open('input.txt') as f:
+    lines = f.read()
+    
+lines = lines.split("\n")
+lines = lines[:-1]
+
+lines = [l.split() for l in lines]
+
+cards = [l for l in 'AKQJT98765432'[::-1]]
+card_ranks = {l: idx+2 for idx, l in enumerate(cards)}
+
+label_rank = {(5): 7, (5,): 7, (1, 4): 6, (2, 3): 5, (1, 1, 3): 4, (1, 2, 2): 3, (1, 1, 1, 2): 2, (1, 1, 1, 1, 1): 1}
+
+sorted_cards = sorted(lines, key = key_function)
+
+sum((i+1)*int(c[1]) for i, c in enumerate(sorted_cards))        
+
+# 245794640
