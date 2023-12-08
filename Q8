@@ -29,3 +29,89 @@ while pos != 'ZZZ':
 
 steps
 # 19637
+
+# Part 2
+
+import math
+
+positions = [p for p in mapkeys if p[-1] == 'A']
+n = len(positions)
+steps = 0
+
+while len([p for p in positions if p[-1] == 'Z']) != n:
+    for i in range(len(dirs)):
+        thisdir = dirs[i]
+        positions = [dirmap[pos][thisdir] for pos in positions]
+        steps = steps + 1
+        if len([p for p in positions if p[-1] == 'Z']) == n:
+            break
+        
+# Too computationally expensive
+# For each start position, the position will hit the points ending in Z in a pattern that will eventually repeat
+
+positions = [p for p in mapkeys if p[-1] == 'A']
+Zs = [p for p in mapkeys if p[-1] == 'Z']
+
+# For each start point, find the first ten times we hit a position ending in Z (number of steps and position) to look for repeated patterns
+# Returns the positions, numbers of steps, number of steps between times (potential cycle lengths)
+def first_ten_Zs(pos):
+    steps = 0
+    poslist = []
+    steplist = []
+    while len(poslist) <= 10:
+        for thisdir in dirs:
+            pos = dirmap[pos][thisdir]
+            steps = steps + 1
+            if pos[-1] == 'Z':
+                poslist.append(pos)
+                steplist.append(steps)
+            if len(poslist) > 10:
+                break
+    difflist = [steplist[i+1]-steplist[i] for i in range(len(steplist)-1)]
+    return poslist, steplist, difflist
+
+# Generate sequences of numbers of steps in which the position ends in Z and look for the intersection across the different start points
+def calculate_cycle_steps(N):
+    return [[startnums[i] + x*cycles[i] for x in range(N)] for i in range(len(startnums))]
+
+positions = [p for p in mapkeys if p[-1] == 'A']
+
+steplists = calculate_cycle_steps(100000000)
+stepsetlist = [set(item) for item in steplists]
+intersection = set.intersection(*stepsetlist)
+
+# This was also too computationally expensive
+
+# Find the start numbers (times to the first time we reach a point ending in Z) and cycle lengths for each start point
+
+allAs = []
+for position in positions:
+    allAs.append(list(first_ten_Zs(position)))
+    
+# The points hit exactly one point ending in 'Z' then cycle through a number of points (the number repeated in difflist) to the same point again.
+
+startnums = [item[1][0] for item in allAs]
+cycles = [item[2][0] for item in allAs]
+
+# The cycles are equal to the startnums
+
+gcd = cycles[0]
+for i in range(len(cycles)):
+    gcd = math.gcd(gcd, cycles[i])
+
+# 269
+
+# Reduce the numbers
+# Solving equations of the form (for all i, j simultaneously) s_i + x_i * c_i = s_j + x_j * c_j
+  
+starts1 = [int(s/269) for s in startnums]
+cycles1 = [int(c/269) for c in cycles]
+
+np.prod(starts1)
+# Overflow
+
+answer = 269
+for s in starts1:
+    answer = answer*s
+    
+# 8811050362409
