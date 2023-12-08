@@ -26,6 +26,8 @@ while pos != 'ZZZ':
         thisdir = dirs[i]
         pos = dirmap[pos][thisdir]
         steps = steps + 1
+        if pos == 'ZZZ':
+            break
 
 steps
 # 19637
