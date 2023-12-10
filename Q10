@@ -67,3 +67,24 @@ path1[-1]
 path2[-1]
 
 # 7173
+
+# Part 2
+
+# Current options:
+# 1. Print it out as a file (3 pages in Word) and join up the lines of the path. Then count the small number of inner squares.
+# 2. Define movement along the grid that does not cross the lines of the loop, e.g. you may travel along any squares that are "." and along or in between
+# specific sections of path, e.g. up between "J" and "L".
+# Then you can pick a corner not in the path and use Dijkstra's alorithm to find the shortest path from the corner to any other cell not in the loop.
+# If this stops with no answer, no path was possible and the point is inside the loop.
+
+# Keep the cells in the loop as they are and replace all other cells with "."
+colgrid = [[1 if [i, j] in [p[0] for p in path1] or [i, j] in [p[0] for p in path2] else 0 for j in range(N)] for i in range(N)]
+npgrid = np.array(colgrid)
+pathgrid = [[grid[i][j] if [i, j] in [p[0] for p in path1] or [i, j] in [p[0] for p in path2] else "." for j in range(N)] for i in range(N)]
+pgrid = [("").join(l) for l in pathgrid]
+outtext = ("\n").join([l for l in pgrid])
+
+with open("output.txt", "w") as fwrite:
+    fwrite.write(outtext)
+
+cells_not_in_loop = [[i, j] for i in range(N) for j in range(N) if [i, j] not in [p[0] for p in path1] and [i, j] not in [p[0] for p in path2]]
