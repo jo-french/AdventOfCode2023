@@ -47,3 +47,35 @@ for l in lines:
 sum(next_elements)
 
 # 1938731307
+
+# Part 2
+
+def prev_in_seqs(seq_list):
+    thisseq = seq_list[-1]
+    thisseq = [0] + seq_list[-1]
+    seq_list[-1] = thisseq
+    n = len(seq_list)
+    if n == 1:
+        return seq_list
+    else:
+        seq_i = n-2
+        while seq_i >= 0:
+            thisseq = seq_list[seq_i]
+            thisseq = [thisseq[0] - seq_list[seq_i+1][0]] + thisseq
+            seq_list[seq_i] = thisseq
+            seq_i = seq_i - 1
+        return seq_list
+
+def prev_in_seq(seq):
+    thisseqlist = [seq]
+    fullseqlist = create_seq_list(thisseqlist)
+    newfullseqlist = prev_in_seqs(fullseqlist)
+    return newfullseqlist[0][0]
+
+prev_elements = []
+for l in lines:
+    prev_elements.append(prev_in_seq([int(x) for x in l.split()]))
+
+sum(prev_elements)
+
+# 948
