@@ -1,0 +1,49 @@
+import pandas as pd
+import numpy as np
+
+def create_seq_list(seqlist):
+    seq = seqlist[-1]
+    n = len(seq)
+    if sum([abs(s) for s in seq]) == 0:
+        return seqlist
+    else:
+        newseq = [seq[i+1]-seq[i] for i in range(n-1)]
+        seqlist.append(newseq)
+        return create_seq_list(seqlist)
+    
+def next_in_seqs(seq_list):
+    thisseq = seq_list[-1]
+    thisseq.append(0)
+    n = len(seq_list)
+    if n == 1:
+        return seq_list
+    else:
+        seq_i = n-2
+        while seq_i >= 0:
+            thisseq = seq_list[seq_i]
+            thisseq.append(seq_list[seq_i+1][-1] + thisseq[-1])
+            seq_i = seq_i - 1
+        return seq_list
+
+def next_in_seq(seq):
+    thisseqlist = [seq]
+    fullseqlist = create_seq_list(thisseqlist)
+    newfullseqlist = next_in_seqs(fullseqlist)
+    return newfullseqlist[0][-1]
+
+with open('input.txt') as f:
+    lines = f.read()
+    
+lines = lines.split("\n")
+lines = lines[:-1]
+
+thisseqlist = [[int(x) for x in lines[0].split()]]
+a = create_seq_list(thisseqlist)
+
+next_elements = []
+for l in lines:
+    next_elements.append(next_in_seq([int(x) for x in l.split()]))
+
+sum(next_elements)
+
+# 1938731307
